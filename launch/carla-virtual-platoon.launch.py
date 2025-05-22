@@ -7,7 +7,7 @@ from launch.actions import DeclareLaunchArgument, OpaqueFunction,Shutdown
 from launch_ros.actions import Node
 from launch.substitutions import LaunchConfiguration, TextSubstitution
 
-def generate_nodes(context, *, num_trucks, map_name):
+def generate_nodes(context, *, num_trucks, map_name, host):
     nodes = []
 
     ros_param_file = os.path.join(
@@ -22,7 +22,10 @@ def generate_nodes(context, *, num_trucks, map_name):
             name=f'bridge{i-1}',
             namespace=f'truck{i-1}',
             output='screen',
-            parameters=[ros_param_file],
+            parameters=[
+                ros_param_file,
+                {'host': host}
+            ],
             arguments=[
                 f'--truck_id={i-1}', 
                 f'--map={map_name}'
@@ -35,7 +38,8 @@ def generate_nodes(context, *, num_trucks, map_name):
 def launch_setup(context):
     num_trucks = LaunchConfiguration('NumTrucks').perform(context)
     map_name = LaunchConfiguration('Map').perform(context)  
-    return generate_nodes(context, num_trucks=num_trucks, map_name=map_name)
+    host = LaunchConfiguration('Host').perform(context)
+    return generate_nodes(context, num_trucks=num_trucks, map_name=map_name, host=host)
 
 
 def generate_launch_description():
@@ -52,8 +56,15 @@ def generate_launch_description():
         description='MapName'
     )
 
+    declare_host = DeclareLaunchArgument(
+        'Host',
+        default_value='localhost',
+        description='CARLA host address'
+    )
+
     return LaunchDescription([
         declare_num_trucks,
         declare_map_name,
+        declare_host,
         OpaqueFunction(function=launch_setup)
     ])

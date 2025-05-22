@@ -112,6 +112,12 @@ int main(int argc, char *argv[]) {
     try {
         rclcpp::init(argc, argv);
 
+        {
+            auto param_node = std::make_shared<rclcpp::Node>("param_loader");
+            param_node->declare_parameter<std::string>("host", host);
+            param_node->get_parameter("host", host);
+        }
+
         int truck_num = 1; // Default value
         std::string map_name = "IHP"; //Default map
 
@@ -129,7 +135,8 @@ int main(int argc, char *argv[]) {
 
         if(truck_num == 0 ) {
             std::cout << "Truck Number : " << truck_num << std::endl;
-            std::cout << "Map Name : " << map_name << std::endl;            
+            std::cout << "Map Name : " << map_name << std::endl;    
+            std::cout << "Host: " << host << std::endl;        
         }
 
         connect_to_carla(truck_num);
