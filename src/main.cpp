@@ -77,11 +77,17 @@ void generate_truck(int truck_num, std::string map_name) {
     // Spawn the trailer
     auto actor_trailer = world->SpawnActor(blueprint_trailer, transform);
     std::cout << "Spawned " << actor_trailer->GetDisplayId() << '\n';
+    // if (!actor_trailer){
+    //     return;
+    // }
     auto vehicle_trailer = boost::static_pointer_cast<cc::Vehicle>(actor_trailer);   
 
     // Spawn the truck
     transform.location += 5.2f * transform.GetForwardVector(); 
     auto actor_truck = world->SpawnActor(blueprint_truck, transform);
+    // if (!actor_truck){
+    //     vehicle_trailer->Destroy();
+    // }
     std::cout << "Spawned " << actor_truck->GetDisplayId() << '\n';
     auto vehicle_truck = boost::static_pointer_cast<cc::Vehicle>(actor_truck);
 
