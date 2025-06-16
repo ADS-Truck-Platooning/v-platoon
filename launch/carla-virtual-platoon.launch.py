@@ -36,40 +36,40 @@ def generate_nodes(context, *, num_trucks, map_name, host):
         nodes.append(node)
     return nodes
 
-# # 긴급 상황 트럭 노드를 생성하는 함수
-# def generate_emergency_truck_node(context, map_name, host):
-#     ros_param_file = os.path.join(
-#                 get_package_share_directory('carla-virtual-platoon'), 
-#                 'config', 
-#                 'config.yaml') 
+# 긴급 상황 트럭 노드를 생성하는 함수
+def generate_emergency_truck_node(context, map_name, host):
+    ros_param_file = os.path.join(
+                get_package_share_directory('carla-virtual-platoon'), 
+                'config', 
+                'config.yaml') 
     
-#     # 새로운 truck_id (예: 100)를 사용
-#     emergency_truck_id = 100 
+    # 새로운 truck_id (예: 100)를 사용
+    emergency_truck_id = 100 
 
-#     node = Node(
-#         package='carla-virtual-platoon',
-#         executable='main',
-#         name=f'emergency_truck_bridge', # 고유한 이름
-#         namespace=f'truck_emergency', # 고유한 네임스페이스
-#         output='screen',
-#         parameters=[
-#             ros_param_file,
-#             {'host': host}
-#         ],
-#         arguments=[
-#             f'--truck_id={emergency_truck_id}', # 긴급 상황 트럭의 ID 전달
-#             f'--map={map_name}'
-#         ],
-#         on_exit=launch.actions.Shutdown()
-#     )
-#     return node
+    node = Node(
+        package='carla-virtual-platoon',
+        executable='main',
+        name=f'emergency_truck_bridge', # 고유한 이름
+        namespace=f'truck_emergency', # 고유한 네임스페이스
+        output='screen',
+        parameters=[
+            ros_param_file,
+            {'host': host}
+        ],
+        arguments=[
+            f'--truck_id={emergency_truck_id}', # 긴급 상황 트럭의 ID 전달
+            f'--map={map_name}'
+        ],
+        on_exit=launch.actions.Shutdown()
+    )
+    return node
 
 def launch_setup(context):
     num_trucks = LaunchConfiguration('NumTrucks').perform(context)
     map_name = LaunchConfiguration('Map').perform(context)  
     host = LaunchConfiguration('Host').perform(context)
 
-    # spawn_emergency_truck = LaunchConfiguration('SpawnEmergencyTruck').perform(context) # <-- 수정 부분
+    spawn_emergency_truck = LaunchConfiguration('SpawnEmergencyTruck').perform(context) # <-- 수정 부분
     all_nodes = generate_nodes(context, num_trucks=num_trucks, map_name=map_name, host=host)
     
     # 긴급 상황 트럭 노드 조건부 추가
